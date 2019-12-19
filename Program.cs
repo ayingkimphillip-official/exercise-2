@@ -2,205 +2,121 @@
 
 namespace Bank_Aying
 {
-    static class Globals
-    {
-        public static Person[] listOfUsers = new Person[5];
-        public static bool starter = true;
-    }
-
     class Program
     {
         public static void Main(string[] args)
         {
-            for (int i = 0; i < Globals.listOfUsers.Length; i++)
+            var bank = new BankOfAying();
+            bank.BankOfAyingAccounts();
+            string name = string.Empty;
+            string username = string.Empty;
+            string password = string.Empty;
+            bool continueloop = true;
+
+            while (continueloop)
             {
-                Globals.listOfUsers[i] = new Person();
-            }
-            
-            int numberOfAccounts = 0;
-            int inputOfAccounts = 0;
-            while (Globals.starter)
-            {
-                Console.WriteLine("Hello User! Welcome to Bank of Aying!");
-                Console.WriteLine("Please input 1: To Register and 2: To Login and e: To Exit");
-                string userInitialAction = Console.ReadLine();
-                
-                switch (userInitialAction.ToLower())
+                Console.Clear();
+                bank.getWelcomeMessage();
+
+                Console.WriteLine("Please Enter 1.) To Register, 2.) To Login, e.) To Exit.");
+
+                switch (Console.ReadLine().ToLower())
                 {
-                    case ("1"):
-                        Console.WriteLine("You have chosen to Register.");
-                        Console.WriteLine("How many accounts do you wish to register?");
-                        
-                        int number = int.Parse(Console.ReadLine());
-                        numberOfAccounts = numberOfAccounts + number;
-                        inputOfAccounts = inputOfAccounts + number;
-                        
-                        if (inputOfAccounts <= Globals.listOfUsers.Length)
-                        {
-                            Registration(number, inputOfAccounts);
-                            // for (int i = 0; i < Globals.listOfUsers.Length; i++)
-                            // {
-                            //     Console.WriteLine($"User{i + 1} Name: {Globals.listOfUsers[i].Name}");
-                            //     Console.WriteLine($"User{i + 1} Username: {Globals.listOfUsers[i].Username}");
-                            //     Console.WriteLine($"User{i + 1} Password: {Globals.listOfUsers[i].Password}");
-                            //     Console.WriteLine($"User{i + 1} Account Number: {Globals.listOfUsers[i].Account}");
-                            // }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Number of entries exceed the storage capacity. Please try again.");
-                        }
+                    case "1":
+                        Console.Clear();
+                        Console.WriteLine("[REGISTRATION]");
+                        Console.WriteLine("Please enter your Name: ");
+                        name = Console.ReadLine();
+                        Console.WriteLine("Please enter Username: ");
+                        username = Console.ReadLine();
+                        Console.WriteLine("Please enter Password: ");
+                        password = Console.ReadLine();
+
+                        var bankID = bank.Registration(name, username, password);
+                        Console.WriteLine($"CONGRATULATIONS! Account ID for {name}: {bankID}");
+                        Console.ReadKey();
                         break;
-                    case ("2"):
-                        Console.WriteLine("You have chosen to Login.");
-                        LoginActions();
-                        break;
-                    case ("e"):
-                        Console.WriteLine("You have chosen to Exit. See you again soon!");
-                        Globals.starter = false;
-                        break;
-                    default:
-                        Console.WriteLine("You have entered an invalid input. Please try again.");
-                        continue;
-                }
-            }
-        }
+                    case "2":
+                        Console.Clear();
+                        Console.WriteLine("[LOGIN]");
+                        Console.WriteLine("Please enter Username: ");
+                        username = Console.ReadLine();
+                        Console.WriteLine("Please enter Password: ");
+                        password = Console.ReadLine();
+                        var bankAccount = bank.LoginActions(username, password);
+                        // bool withinAccount = true;
 
-        public static int Registration(int number, int inputOfAccounts)
-        {
-            for (int i = 0; i < number; i++)
-            {
-                Console.WriteLine("Please Enter name: ");
-                Globals.listOfUsers[i].Name = Console.ReadLine();
-                Console.WriteLine("Please Enter username: ");
-                Globals.listOfUsers[i].Username = Console.ReadLine();
-                Console.WriteLine("Please Enter password: ");
-                Globals.listOfUsers[i].Password = Console.ReadLine();
-                Globals.listOfUsers[i].Account = new Random().Next(0, 999999);
-                
-            }
 
-            for (int i = 0; i < Globals.listOfUsers.Length; i++)
-            {
-                Console.WriteLine($"User{i + 1} Name: {Globals.listOfUsers[i].Name}");
-                Console.WriteLine($"User{i + 1} Username: {Globals.listOfUsers[i].Username}");
-                Console.WriteLine($"User{i + 1} Password: {Globals.listOfUsers[i].Password}");
-                Console.WriteLine($"User{i + 1} Account Number: {Globals.listOfUsers[i].Account}");
-
-            }
-
-            return inputOfAccounts;
-        }
-
-        public static void LoginActions()
-        {
-            bool continueAction = true;
-            Console.WriteLine($"User[0]: {Globals.listOfUsers[0].Name}");
-            Console.WriteLine($"User[1]: {Globals.listOfUsers[1].Name}");
-            Console.WriteLine("Please enter Username: ");
-            string holderUsername = Console.ReadLine();
-            Console.WriteLine("Please enter Password: ");
-            string holderPassword = Console.ReadLine();
-
-            
-                for (int i = 0; i < Globals.listOfUsers.Length; i++)
-                {
-                    if (holderUsername == Globals.listOfUsers[i].Username)
-                    {
-                        Console.WriteLine($"Input username: {holderUsername}");
-                        Console.WriteLine("You have entered the correct username.");
-
-                        if (holderPassword == Globals.listOfUsers[i].Password)
+                        if (bankAccount != null)
                         {
-                            Console.WriteLine($"Input password: {holderPassword}");
-                            Console.WriteLine("You have entered the correct password.");
-
-                            while (continueAction == true)
+                            Console.Clear();
+                            bool continueWithinAccount = true;
+                            while (continueWithinAccount)
                             {
-                                Console.WriteLine($"Welcome {Globals.listOfUsers[i].Name}!!");
-                                Console.WriteLine("Please input 1: To Deposit to own account, 2: To Withdraw; 3: To Deposit to another account; e: to exit");
-
-                                string action = Console.ReadLine();
-                                float accountBalance;
-
-                                switch (action.ToLower())
+                                Console.Clear();
+                                Console.WriteLine($"Welcome {bankAccount.Name}: {bankAccount.AccountID}!");
+                                Console.WriteLine("What would it be for today?");
+                                Console.Write("1.) View Balance; 2.) Deposit to own account; 3.) Withdraw; 4.) Deposit to another account; 5.) Logout: ");
+                                string loginAction = Console.ReadLine();
+                                switch (loginAction)
                                 {
-                                    case ("1"):
-                                        Console.WriteLine("You chose to Deposit to your own account.");
-                                        Console.WriteLine("Please enter amount you wish to deposit: ");
-                                        accountBalance = float.Parse(Console.ReadLine());
-                                        Globals.listOfUsers[i].AccountBalance = Globals.listOfUsers[i].AccountBalance + accountBalance;
-                                        Console.WriteLine($"You have deposited Php {accountBalance} to your account ({Globals.listOfUsers[i].Account})");
-                                        Console.WriteLine($"Your updated Account Balance for your Account Number ({Globals.listOfUsers[i].Account}) is: {Globals.listOfUsers[i].AccountBalance}");
-
+                                    case "1":
+                                        Console.Clear();
+                                        bank.ActionList(loginAction, 0.0f, bankAccount.AccountID, bankAccount.AccountID);
+                                        Console.ReadKey();
                                         break;
-
-                                    case ("2"):
-                                        Console.WriteLine("You chose to Withdraw from your own account.");
-                                        Console.WriteLine("Please enter amount you wish to withdraw: ");
-                                        accountBalance = float.Parse(Console.ReadLine());
-                                        if (Globals.listOfUsers[i].AccountBalance < accountBalance)
-                                        {
-                                            Console.WriteLine("Insufficient Funds. Please try again.");
-                                        }
-                                        else
-                                        {
-                                            Globals.listOfUsers[i].AccountBalance = Globals.listOfUsers[i].AccountBalance - accountBalance;
-                                            Console.WriteLine($"You have withdrawn Php {accountBalance} to your account ({Globals.listOfUsers[i].Account})");
-                                            Console.WriteLine($"Your updated Account Balance for your Account Number ({Globals.listOfUsers[i].Account}) is: {Globals.listOfUsers[i].AccountBalance}");
-                                        }
-                                        
+                                    case "2":
+                                        Console.Clear();
+                                        Console.WriteLine("You have chosen to deposit to your own account. Please enter amount to Deposit: ");
+                                        bank.ActionList(loginAction, float.Parse(Console.ReadLine()), bankAccount.AccountID, bankAccount.AccountID);
+                                        Console.ReadKey();
                                         break;
-                                        
-                                    case ("3"):
-                                        Console.WriteLine("You chose to Deposit to your another account.");
-                                        Console.WriteLine("Please enter account number you wish to deposit to: ");
-                                        int depositee = int.Parse(Console.ReadLine());
-
-                                        for (int j = 0; j < Globals.listOfUsers.Length; j++)
-                                        {
-                                            if (depositee == Globals.listOfUsers[j].Account)
-                                            {
-                                                Console.WriteLine("Account number entered found in database. How much do you want to deposit to this account?");
-                                                accountBalance = float.Parse(Console.ReadLine());
-                                                Globals.listOfUsers[j].AccountBalance = Globals.listOfUsers[i].AccountBalance + accountBalance;
-                                                Console.WriteLine($"You have deposited to Account Number ({Globals.listOfUsers[j].Account}) an amount of: {Globals.listOfUsers[j].AccountBalance}");
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Account number entered not in database. Please try again.");
-                                                break;
-                                            }
-                                        }
-
-                                    break;
-
-                                    case ("e"):
-                                        Console.WriteLine("You have chosen to Exit. See you again soon!");
-                                        Globals.starter = false;
-                                        continueAction = false;
-
+                                    case "3":
+                                        Console.Clear();
+                                        Console.WriteLine("You have chosen to withdraw from your own account. Please enter amount to Withdraw: ");
+                                        bank.ActionList(loginAction, float.Parse(Console.ReadLine()), bankAccount.AccountID, bankAccount.AccountID);
+                                        Console.ReadKey();
                                         break;
-
+                                    case "4":
+                                        Console.Clear();
+                                        Console.WriteLine("You have chosen to deposit to another account.");
+                                        Console.WriteLine("Please input the Account ID you wish to deposit to: ");
+                                        var anotherAccountID = Guid.Parse(Console.ReadLine());
+                                        Console.WriteLine("Please input the amount you wish to deposit to: ");
+                                        var amountOfDeposit = float.Parse(Console.ReadLine());
+                                        bank.ActionList(loginAction, amountOfDeposit, bankAccount.AccountID, anotherAccountID);
+                                        Console.ReadKey();
+                                        break;
+                                    case "5":
+                                        Console.Clear();
+                                        Console.WriteLine("You have chosen to Logout. Please back again.");
+                                        continueWithinAccount = false;
+                                        break;
                                     default:
-                                        Console.WriteLine("You have entered an invalid input. Please Try again.");
-
+                                        Console.Clear();
+                                        Console.WriteLine("You have entered an invalid input. Please try again.");
+                                        Console.ReadKey();
                                         break;
                                 }
                             }
-                            break;
                         }
                         else
                         {
-                            Console.WriteLine($"Input username: {holderUsername}");
-                            Console.WriteLine($"Input password: {holderPassword}");
-                            Console.WriteLine("You have entered incorrect credentials. Please try again.");
-                            break;
+                            Console.WriteLine("You have entered an invalid account. Please try again.");
+                            Console.ReadKey();
                         }
-                    }
+                        Console.ReadKey();
+                        break;
+                    case "e":
+                        Console.Clear();
+                        Console.WriteLine("You have chosen to Exit. See you again soon!");
+                        continueloop = false;
+                        break;
+                    default:
+                        Console.WriteLine("You have entered invalid input. Please try again.");
+                        break;
                 }
-            Globals.starter = false;
+            }
         }
     }
 }
