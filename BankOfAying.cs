@@ -2,126 +2,104 @@ using System;
 
 class BankOfAying
 {
-    public Account[] listOfAccounts { get; set; }
-    private int indexInAccount { get; set; } = 0;
+    private Account[] Accounts { get; set; }
+    private int IndexInAccount { get; set; } = 0;
 
-    public void BankOfAyingAccounts()
+    public BankOfAying()
     {
-        listOfAccounts = new Account[10];
-        for (var i = 0; i < listOfAccounts.Length; i++)
-        {
-            listOfAccounts[i] = new Account();
-        }
-    }
-
-    public string getWelcomeMessage()
-    {
-        return "Hello User! Welcome to Bank of Aying!";
+        Accounts = new Account[10];
+        for(int i = 0; i < Accounts.Length; i++) Accounts[i] = new Account();
+        Console.WriteLine("Welcome to Bank of Aying");
     }
 
     public Guid Registration(string name, string username, string password)
     {
-        listOfAccounts[indexInAccount].Name = name;
-        listOfAccounts[indexInAccount].Username = username;
-        listOfAccounts[indexInAccount].Password = password;
-        indexInAccount++;
-
-        return listOfAccounts[indexInAccount].AccountID;
+        Guid AccountIDHolder;
+        Accounts[IndexInAccount].Name = name;
+        Accounts[IndexInAccount].Password = password;
+        Accounts[IndexInAccount].Username = UniqueUsernameFinder(username);
+       
+        if(Accounts[IndexInAccount].Username != username)
+        {
+            AccountIDHolder = Accounts[IndexInAccount].AccountID;
+            Console.Clear();
+            Console.WriteLine("Username already taken. Please enter another one.");
+        }
+        else
+        {
+            Accounts[IndexInAccount].AccountID = Guid.NewGuid();
+            AccountIDHolder = Accounts[IndexInAccount].AccountID;
+            Console.Clear();
+            Console.WriteLine($"Congratulations {name} for a successful registration.");
+            Console.WriteLine($"You have been assigned with Account ID: {AccountIDHolder}");
+            IndexInAccount++;
+        }
+        return AccountIDHolder;
     }
 
-    public Account LoginActions(string username, string password)
+    public string UniqueUsernameFinder(string username)
     {
-        foreach (Account totalAccounts in listOfAccounts)
+        for (int i = 0; i < Accounts.Length; i++)
         {
-            if (totalAccounts.Username == username && totalAccounts.Password == password)
+            if (Accounts[i].Username == null)
             {
-                return totalAccounts;
+                Accounts[i].Username = username;
+                break;
+            }
+            else if (Accounts[i].Username != null && Accounts[i].Username == username)
+            {
+                break;
+            }
+        }
+        return Accounts[IndexInAccount].Username;
+    }
+
+    public Account Login(string username, string password)
+    {
+        for (int i = 0; i < Accounts.Length; i++)
+        {
+            if (Accounts[i].Username == username && Accounts[i].Password == password)
+            {
+                return Accounts[i];
             }
         }
         return null;
     }
 
-    public Account ActionList(string action, float input, Guid ownAccountID, Guid otherAccount)
+    public float Deposit(float deposit)
     {
-        switch (action)
-        {
-            case "1":
-                for (int i = 0; i < listOfAccounts.Length; i++)
-                {
-                    if (listOfAccounts[i].AccountID == ownAccountID)
-                    {
-                        Console.WriteLine($"Your Account Balance is: {listOfAccounts[i].AccountBalance}");
-                    }
-                }
-                break;
-            case "2":
-                for (int i = 0; i < listOfAccounts.Length; i++)
-                {
-                    if (listOfAccounts[i].AccountID == ownAccountID)
-                    {
-                        Deposit(input, ownAccountID);
-                    }
-                }
-                break;
-            case "3":
-                for (int i = 0; i < listOfAccounts.Length; i++)
-                {
-                    if (listOfAccounts[i].AccountID == ownAccountID)
-                    {
-                        Withdraw(input, ownAccountID);
-                    }
-                }
-                break;
-            case "4":
-                for (int i = 0; i < listOfAccounts.Length; i++)
-                {
-                    if (listOfAccounts[i].AccountID == otherAccount)
-                    {
-                        DepositToAnotherAccount(input, ownAccountID, otherAccount);
-                        // Console.WriteLine($"Your updated Account Balance is: {listOfAccounts[i].AccountBalance}");
-                    }
-                }
-                break;
-        }
-        return null;
+        Console.Clear();
+        Accounts[IndexInAccount].AccountBalance = Accounts[IndexInAccount].AccountBalance + deposit;
+        Console.WriteLine($"Your updated Account Balance is: Php {Accounts[IndexInAccount].AccountBalance}.");
+        return Accounts[IndexInAccount].AccountBalance;
     }
 
-    public Account[] Deposit(float input, Guid ownAccountID)
+    public float Withdraw(float withdraw)
     {
-        for (int i = 0; i < listOfAccounts.Length; i++)
+        if (Accounts[IndexInAccount].AccountBalance >= withdraw)
         {
-            if (listOfAccounts[i].AccountID == ownAccountID)
-            {
-                listOfAccounts[i].AccountBalance = listOfAccounts[i].AccountBalance + input;
-                Console.WriteLine($"Your updated Account Balance is: {listOfAccounts[i].AccountBalance}");
-            }
+            Console.Clear();
+            Accounts[IndexInAccount].AccountBalance = Accounts[IndexInAccount].AccountBalance - withdraw;
+            Console.WriteLine($"Your updated Account Balance is: Php {Accounts[IndexInAccount].AccountBalance}");
         }
-        return listOfAccounts;
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("Insufficient funds. Please try again.");
+        }
+        return Accounts[IndexInAccount].AccountBalance;
     }
 
-    public Account[] Withdraw(float input, Guid ownAccountID)
+    public Account OtherAccountIDFinder(Guid otherAccountID)
     {
-        for (int i = 0; i < listOfAccounts.Length; i++)
+        for (int i = 0; i < Accounts.Length; i++)
         {
-            if (listOfAccounts[i].AccountID == ownAccountID && listOfAccounts[i].AccountBalance >= input)
+            if (Accounts[i].AccountID == otherAccountID)
             {
-                listOfAccounts[i].AccountBalance = listOfAccounts[i].AccountBalance - input;
-                Console.WriteLine($"Your updated Account Balance is: {listOfAccounts[i].AccountBalance}");
-                break;
-            }
-            else
-            {
-                Console.WriteLine("Insufficient Funds. Please try again.");
-                break;
+                return Accounts[i];
             }
         }
-        return listOfAccounts;
-    }
-
-    public Account DepositToAnotherAccount(float input, Guid ownAccountID, Guid otherAccountID)
-    {
-        Deposit(input, otherAccountID);
-        Withdraw(input, ownAccountID);
         return null;
     }
 }
+

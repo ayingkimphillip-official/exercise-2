@@ -1,121 +1,174 @@
 ﻿using System;
 
-namespace Bank_Aying
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var bank = new BankOfAying();
+        bool loopbank = true;
+        string Name = string.Empty;
+        string Username = string.Empty;
+        string Password = string.Empty;
+
+        while (loopbank)
         {
-            var bank = new BankOfAying();
-            bank.BankOfAyingAccounts();
-            string name = string.Empty;
-            string username = string.Empty;
-            string password = string.Empty;
-            bool continueloop = true;
-
-            while (continueloop)
+            Console.Clear();
+            Console.WriteLine("Please Enter Type of Action: ");
+            Console.WriteLine("1.) Register");
+            Console.WriteLine("2.) Login");
+            Console.WriteLine("E.) Exit");
+            switch (Console.ReadLine().ToUpper())
             {
-                Console.Clear();
-                bank.getWelcomeMessage();
+                case "1":
+                    Console.Clear();
+                    Console.WriteLine("[REGISTER]");
+                    Console.WriteLine("Please enter Name: ");
+                    Name = Console.ReadLine();
+                    Console.WriteLine("Please enter Username: ");
+                    Username = Console.ReadLine();
+                    Console.WriteLine("Please enter Password: ");
+                    Password = Console.ReadLine();
+                    var ID = bank.Registration(Name, Username, Password);
 
-                Console.WriteLine("Please Enter 1.) To Register, 2.) To Login, e.) To Exit.");
+                    Console.ReadKey();
+                    break;
+                case "2":
+                    Console.Clear();
+                    Console.WriteLine("[LOGIN]");
+                    Console.WriteLine("Please enter Username: ");
+                    Username = Console.ReadLine();
+                    Console.WriteLine("Please enter Password: ");
+                    Password = Console.ReadLine();
+                    var account = bank.Login(Username, Password);
 
-                switch (Console.ReadLine().ToLower())
-                {
-                    case "1":
+                    if (account != null)
+                    {
                         Console.Clear();
-                        Console.WriteLine("[REGISTRATION]");
-                        Console.WriteLine("Please enter your Name: ");
-                        name = Console.ReadLine();
-                        Console.WriteLine("Please enter Username: ");
-                        username = Console.ReadLine();
-                        Console.WriteLine("Please enter Password: ");
-                        password = Console.ReadLine();
+                        bool loginloop = true;
+                        float deposit;
+                        float withdraw;
+                        float depositOtherAccount;
+                        Guid otherAccountID;
 
-                        var bankID = bank.Registration(name, username, password);
-                        Console.WriteLine($"CONGRATULATIONS! Account ID for {name}: {bankID}");
-                        Console.ReadKey();
-                        break;
-                    case "2":
-                        Console.Clear();
-                        Console.WriteLine("[LOGIN]");
-                        Console.WriteLine("Please enter Username: ");
-                        username = Console.ReadLine();
-                        Console.WriteLine("Please enter Password: ");
-                        password = Console.ReadLine();
-                        var bankAccount = bank.LoginActions(username, password);
-                        // bool withinAccount = true;
-
-
-                        if (bankAccount != null)
+                        while (loginloop == true)
                         {
                             Console.Clear();
-                            bool continueWithinAccount = true;
-                            while (continueWithinAccount)
+                            Console.WriteLine($"Welcome back {account.Name}: {account.AccountID}");
+                            Console.WriteLine("What do you plan to do today?");
+                            Console.WriteLine("1.) View Balance");
+                            Console.WriteLine("2.) Deposit");
+                            Console.WriteLine("3.) Withdraw");
+                            Console.WriteLine("4.) Deposit to other account");
+                            Console.WriteLine("5.) Logout");
+
+                            switch (Console.ReadLine())
                             {
-                                Console.Clear();
-                                Console.WriteLine($"Welcome {bankAccount.Name}: {bankAccount.AccountID}!");
-                                Console.WriteLine("What would it be for today?");
-                                Console.Write("1.) View Balance; 2.) Deposit to own account; 3.) Withdraw; 4.) Deposit to another account; 5.) Logout: ");
-                                string loginAction = Console.ReadLine();
-                                switch (loginAction)
-                                {
-                                    case "1":
-                                        Console.Clear();
-                                        bank.ActionList(loginAction, 0.0f, bankAccount.AccountID, bankAccount.AccountID);
-                                        Console.ReadKey();
-                                        break;
-                                    case "2":
-                                        Console.Clear();
-                                        Console.WriteLine("You have chosen to deposit to your own account. Please enter amount to Deposit: ");
-                                        bank.ActionList(loginAction, float.Parse(Console.ReadLine()), bankAccount.AccountID, bankAccount.AccountID);
-                                        Console.ReadKey();
-                                        break;
-                                    case "3":
-                                        Console.Clear();
-                                        Console.WriteLine("You have chosen to withdraw from your own account. Please enter amount to Withdraw: ");
-                                        bank.ActionList(loginAction, float.Parse(Console.ReadLine()), bankAccount.AccountID, bankAccount.AccountID);
-                                        Console.ReadKey();
-                                        break;
-                                    case "4":
-                                        Console.Clear();
-                                        Console.WriteLine("You have chosen to deposit to another account.");
-                                        Console.WriteLine("Please input the Account ID you wish to deposit to: ");
-                                        var anotherAccountID = Guid.Parse(Console.ReadLine());
-                                        Console.WriteLine("Please input the amount you wish to deposit to: ");
-                                        var amountOfDeposit = float.Parse(Console.ReadLine());
-                                        bank.ActionList(loginAction, amountOfDeposit, bankAccount.AccountID, anotherAccountID);
-                                        Console.ReadKey();
-                                        break;
-                                    case "5":
-                                        Console.Clear();
-                                        Console.WriteLine("You have chosen to Logout. Please back again.");
-                                        continueWithinAccount = false;
-                                        break;
-                                    default:
-                                        Console.Clear();
-                                        Console.WriteLine("You have entered an invalid input. Please try again.");
-                                        Console.ReadKey();
-                                        break;
-                                }
+                                case "1":
+                                    Console.Clear();
+                                    Console.WriteLine($"Your Account Balance is: Php {account.AccountBalance}");
+                                    Console.ReadKey();
+                                    break;
+                                case "2":
+                                    Console.Clear();
+                                    Console.WriteLine("You have chosen to Deposit to your own Account.");
+                                    Console.WriteLine("How much would you like to Deposit?");
+                                    bool isdepositfloat = float.TryParse(Console.ReadLine(), out deposit);
+
+                                    if (isdepositfloat == true)
+                                    {
+                                        account.AccountBalance = bank.Deposit(deposit);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Incorrect values for amount. Please try again.");
+                                    }
+
+                                    Console.ReadKey();
+                                    break;
+                                case "3":
+                                    Console.Clear();
+                                    Console.WriteLine("You have chosen to Withdraw from your own Account.");
+                                    Console.WriteLine("How much would you like to Withdraw?");
+                                    bool iswithdrawfloat = float.TryParse(Console.ReadLine(), out withdraw);
+
+                                    if (iswithdrawfloat == true)
+                                    {
+                                        account.AccountBalance = bank.Withdraw(withdraw);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Incorrect values for amount. Please try again.");
+                                    }
+
+                                    Console.ReadKey();
+                                    break;
+                                case "4":
+                                    Console.Clear();
+                                    Console.WriteLine("You have chosen to Deposit to another Account.");
+                                    Console.WriteLine("Please input the Account ID of the Account you want to Deposit to.");
+                                    bool isOtherAccountGuid = Guid.TryParse(Console.ReadLine(), out otherAccountID);
+
+                                    if (isOtherAccountGuid == true)
+                                    {
+                                        var otherAccount = bank.OtherAccountIDFinder(otherAccountID);
+
+                                        if (otherAccount != null)
+                                        {
+                                            Console.WriteLine("How much would you like to Deposit?");
+                                            bool isAmountFloat = float.TryParse(Console.ReadLine(), out depositOtherAccount);
+
+                                            if (isAmountFloat == true)
+                                            {
+                                                account.AccountBalance = bank.Withdraw(depositOtherAccount);
+                                                otherAccount.AccountBalance = otherAccount.AccountBalance + depositOtherAccount;
+                                                Console.WriteLine($"You have deposited an amount of {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Incorrect values for amount. Please try again.");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("No Account Found. Please try again.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Incorrect values for account ID. Please try again.");
+                                    }
+
+                                    Console.ReadKey();
+                                    break;
+                                case "5":
+                                    Console.Clear();
+                                    Console.WriteLine("You have chosen to Logout. See you again soon.");
+                                    loginloop = false;
+                                    Console.ReadKey();
+                                    break;
+                                default:
+                                    Console.Clear();
+                                    Console.WriteLine("You have entered an invalid input. Please try again.");
+                                    Console.ReadKey();
+                                    break;
                             }
                         }
-                        else
-                        {
-                            Console.WriteLine("You have entered an invalid account. Please try again.");
-                            Console.ReadKey();
-                        }
-                        Console.ReadKey();
-                        break;
-                    case "e":
-                        Console.Clear();
-                        Console.WriteLine("You have chosen to Exit. See you again soon!");
-                        continueloop = false;
-                        break;
-                    default:
-                        Console.WriteLine("You have entered invalid input. Please try again.");
-                        break;
-                }
+                    }
+                    else
+                    {
+                        Console.WriteLine("You have entered invalid credentials. Please Try again.");
+                    }
+                    Console.ReadKey();
+                    break;
+                case "E":
+                    Console.Clear();
+                    Console.WriteLine("You have chosen to Exit. See you again soon!");
+                    loopbank = false;
+                    break;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("You have entered an invalid input. Please try again.");
+                    break;
             }
         }
     }
