@@ -122,7 +122,6 @@ class Program
                                                 if (account.AccountBalance >= depositOtherAccount)
                                                 {
                                                     account.AccountBalance = bank.Withdraw(depositOtherAccount);
-                                                    Console.WriteLine($"Account Balance: {account.AccountBalance}");
                                                     otherAccount.AccountBalance = otherAccount.AccountBalance + depositOtherAccount;
                                                     Console.WriteLine($"You have deposited an amount of Php {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
                                                 }
@@ -134,16 +133,19 @@ class Program
                                             }
                                             else
                                             {
+                                                Console.Clear();
                                                 Console.WriteLine("Incorrect values for amount. Please try again.");
                                             }
                                         }
                                         else
                                         {
+                                            Console.Clear();
                                             Console.WriteLine("No Account Found. Please try again.");
                                         }
                                     }
                                     else
                                     {
+                                        Console.Clear();
                                         Console.WriteLine("Incorrect values for account ID. Please try again.");
                                     }
 
