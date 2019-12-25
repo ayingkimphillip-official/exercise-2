@@ -27,7 +27,7 @@ class Program
                     Console.WriteLine("Please enter Username: ");
                     Username = Console.ReadLine();
                     Console.WriteLine("Please enter Password: ");
-                    Password = Console.ReadLine();
+                    Password = PasswordMasking();
                     var ID = bank.Registration(Name, Username, Password);
 
                     Console.ReadKey();
@@ -38,7 +38,7 @@ class Program
                     Console.WriteLine("Please enter Username: ");
                     Username = Console.ReadLine();
                     Console.WriteLine("Please enter Password: ");
-                    Password = Console.ReadLine();
+                    Password = PasswordMasking();
                     var account = bank.Login(Username, Password);
 
                     if (account != null)
@@ -119,9 +119,18 @@ class Program
 
                                             if (isAmountFloat == true)
                                             {
-                                                account.AccountBalance = bank.Withdraw(depositOtherAccount);
-                                                otherAccount.AccountBalance = otherAccount.AccountBalance + depositOtherAccount;
-                                                Console.WriteLine($"You have deposited an amount of {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
+                                                if (account.AccountBalance >= depositOtherAccount)
+                                                {
+                                                    account.AccountBalance = bank.Withdraw(depositOtherAccount);
+                                                    Console.WriteLine($"Account Balance: {account.AccountBalance}");
+                                                    otherAccount.AccountBalance = otherAccount.AccountBalance + depositOtherAccount;
+                                                    Console.WriteLine($"You have deposited an amount of Php {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
+                                                }
+                                                else
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("Insufficient funds. Please input another amount.");
+                                                }
                                             }
                                             else
                                             {
@@ -156,6 +165,7 @@ class Program
                     }
                     else
                     {
+                        Console.Clear();
                         Console.WriteLine("You have entered invalid credentials. Please Try again.");
                     }
                     Console.ReadKey();
@@ -171,5 +181,34 @@ class Program
                     break;
             }
         }
+    }
+
+    public static string PasswordMasking()
+    {
+        bool continuepassmask = true;
+        string password = string.Empty;
+
+        while (continuepassmask == true)
+        {
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+            else
+            {
+                if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                {
+                    password = password.Substring(0, (password.Length -1));
+                    Console.Write("\b \b");
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                {
+                    continuepassmask = false;
+                }
+            }
+        }
+        return password;
     }
 }
