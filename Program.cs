@@ -76,7 +76,9 @@ class Program
 
                                     if (isdepositfloat == true)
                                     {
-                                        account.AccountBalance = bank.Deposit(deposit);
+                                        Console.Clear();
+                                        var depositAccount = bank.Deposit(deposit, account.AccountID);
+                                        Console.WriteLine($"Your updated Account Balance is: Php {depositAccount.AccountBalance}.");
                                     }
                                     else
                                     {
@@ -93,7 +95,9 @@ class Program
 
                                     if (iswithdrawfloat == true)
                                     {
-                                        account.AccountBalance = bank.Withdraw(withdraw);
+                                        Console.Clear();
+                                        var withdrawAccount = bank.Withdraw(withdraw, account.AccountID);
+                                        Console.WriteLine($"Your updated Account Balance is: Php {withdrawAccount.AccountBalance}");
                                     }
                                     else
                                     {
@@ -121,8 +125,11 @@ class Program
                                             {
                                                 if (account.AccountBalance >= depositOtherAccount)
                                                 {
-                                                    account.AccountBalance = bank.Withdraw(depositOtherAccount);
-                                                    otherAccount.AccountBalance = otherAccount.AccountBalance + depositOtherAccount;
+                                                    bank.Withdraw(depositOtherAccount, account.AccountID);
+                                                    bank.Deposit(depositOtherAccount, otherAccount.AccountID);
+
+                                                    Console.Clear();
+                                                    Console.WriteLine($"Your updated Balance is: {account.AccountBalance}");
                                                     Console.WriteLine($"You have deposited an amount of Php {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
                                                 }
                                                 else

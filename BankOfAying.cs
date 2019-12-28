@@ -66,28 +66,38 @@ class BankOfAying
         return null;
     }
 
-    public float Deposit(float deposit)
+    public Account Deposit(float deposit, Guid AccountID)
     {
-        Console.Clear();
-        Accounts[IndexInAccount].AccountBalance = Accounts[IndexInAccount].AccountBalance + deposit;
-        Console.WriteLine($"Your updated Account Balance is: Php {Accounts[IndexInAccount].AccountBalance}.");
-        return Accounts[IndexInAccount].AccountBalance;
+        for (int i = 0; i < Accounts.Length; i++)
+        {
+            if (Accounts[i].AccountID == AccountID)
+            {
+                Accounts[i].AccountBalance = Accounts[i].AccountBalance + deposit;
+                return Accounts[i];
+            }
+        }
+        return null;
     }
 
-    public float Withdraw(float withdraw)
+    public Account Withdraw(float withdraw, Guid AccountID)
     {
-        if (Accounts[IndexInAccount].AccountBalance >= withdraw)
+        for (int i = 0; i < Accounts.Length; i++)
         {
-            Console.Clear();
-            Accounts[IndexInAccount].AccountBalance = Accounts[IndexInAccount].AccountBalance - withdraw;
-            Console.WriteLine($"Your updated Account Balance is: Php {Accounts[IndexInAccount].AccountBalance}");
+            if (Accounts[i].AccountID == AccountID)
+            {
+                if (Accounts[i].AccountBalance >= withdraw)
+                {
+                    Accounts[i].AccountBalance = Accounts[i].AccountBalance - withdraw;
+                    return Accounts[i];
+                }
+                else
+                {
+                    Console.WriteLine("Insufficient funds. Please try again.");
+                    break;
+                }
+            }
         }
-        else
-        {
-            Console.Clear();
-            Console.WriteLine("Insufficient funds. Please try again.");
-        }
-        return Accounts[IndexInAccount].AccountBalance;
+        return null;
     }
 
     public Account OtherAccountIDFinder(Guid otherAccountID)
