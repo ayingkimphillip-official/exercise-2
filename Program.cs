@@ -129,7 +129,7 @@ class Program
                                                     bank.Deposit(depositOtherAccount, otherAccount.AccountID);
 
                                                     Console.Clear();
-                                                    Console.WriteLine($"Your updated Balance is: {account.AccountBalance}");
+                                                    Console.WriteLine($"Your updated Balance is: Php {account.AccountBalance}");
                                                     Console.WriteLine($"You have deposited an amount of Php {depositOtherAccount} to Account ID: {otherAccount.AccountID}");
                                                 }
                                                 else
